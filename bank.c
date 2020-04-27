@@ -13,6 +13,7 @@
     // for functions semget() to get semaphore, and semctl() set initial value of semget() 
 #define KEY1 1100
 #define KEY2 1111
+#define KEY3 1122
 
 #define CHILD      			0  			/* Return value of child proc from fork call */
 #define TRUE       			0  
@@ -27,7 +28,7 @@ union semun {
     unsigned short  *array;
 };
 
-int sem1, sem2;
+int sem1, sem2 sem3;
 
 int SEM_ON(int sem_id, int sem_val);
 int SEM_OFF(int sem_id);
@@ -59,8 +60,15 @@ int main()
         exit(EXIT_FAILURE); 
     }
    
+   sem3 = semget(KEY3, 1, IPC_CREAT | 0666); 
+    if(sem3 < 0)
+    {
+        perror("ERROR: segmet sem3\n");
+        exit(EXIT_FAILURE); 
+    }
 	SEM_ON(sem1,1); //originally 1,0,1
     SEM_ON(sem2,0); 
+	SEM_ON(sem3,0); 
  
 	//Initialize the file balance to be $100                                // ** fp1 opens "balance" and writes the initial amount of the accnt 100
 	fp1 = fopen("balance","w");                                             //** prints this to the file at this point there should be 100 
@@ -243,6 +251,7 @@ int main()
 				printf("Process(pid = %d) exited with the status %d. \n", pid, status);
                 SEM_OFF(sem1); //-------------------------- turn off semaphores 
                 SEM_OFF(sem2); 
+				SEM_OFF(sem3);
 			}
 			exit(0);
 		}
