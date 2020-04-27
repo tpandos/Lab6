@@ -28,7 +28,7 @@ union semun {
     unsigned short  *array;
 };
 
-int sem1, sem2 sem3;
+int sem1, sem2, sem3;
 
 int SEM_ON(int sem_id, int sem_val);
 int SEM_OFF(int sem_id);
@@ -68,7 +68,7 @@ int main()
     }
 	SEM_ON(sem1,1); //originally 1,0,1
     SEM_ON(sem2,0); 
-	SEM_ON(sem3,0); 
+	SEM_ON(sem3,1); 
  
 	//Initialize the file balance to be $100                                // ** fp1 opens "balance" and writes the initial amount of the accnt 100
 	fp1 = fopen("balance","w");                                             //** prints this to the file at this point there should be 100 
@@ -100,7 +100,7 @@ int main()
 			fp1 = fopen("balance", "r+");
             dad++; 
 			printf("DAD waited %d times\n",dad);
-            P(sem1); //------------------------------------------------------------------wait sem2 semwait 
+            P(sem1); //------------------------------------------------------------------wait sem2 semwait DAD
 			fscanf(fp1, "%d", &bal2);
 			printf("Dear old dad reads balance = %d \n", bal2);
 			
@@ -110,7 +110,7 @@ int main()
 			bal2 += 60;
 			printf("Dear old dad writes new balance = %d \n", bal2);        
 			fprintf(fp1, "%d \n", bal2);
-            V(sem2); //-----------------------------------------------------------------> signal sem1   semsignal 
+            V(sem3); //-----------------------------------------------------------------> signal sem1   semsignal  DAD
             //V(sem3);  //this works 
 			fclose(fp1);
 			printf("Dear old dad is done doing update. \n");
@@ -135,7 +135,7 @@ int main()
 			{
                 son1++; 
 				printf("SON1 waited %d times\n",son1);
-                P(sem2);//-----------------------------sem
+                P(sem2);//-----------------------------sem SON1
 				fp3 = fopen("attempt" , "r+");                      //** son1 is checking the balance 
 				fscanf(fp3, "%d", &N_Att);
 				if(N_Att == 0)
@@ -171,7 +171,8 @@ int main()
 						N_Att -=1;
 						fprintf(fp3, "%d\n", N_Att);
                     
-                        V(sem3); // -------------------------------------------------------- signal sem2
+                        V(sem1); // -------------------------------------------------------- signal sem2  SON1
+						V(sem3);
 						fclose(fp3); 
 					}
 				}
@@ -196,7 +197,7 @@ int main()
 				{
                     son2++; 
 					printf("SON2 waited %d times\n",son2);
-                    P(sem3);// wait--------------------------sem
+                    P(sem1);// wait--------------------------sem SON2
 					fp3 = fopen("attempt" , "r+");                              // **  
                     
 					fscanf(fp3, "%d", &N_Att);
@@ -231,8 +232,8 @@ int main()
 							fseek(fp3,0L, 0);
 							N_Att -=1;
 							fprintf(fp3, "%d\n", N_Att);
-                            V(sem1); // -------------------------------------------------------- signal sem2 
-                            //V(sem2); 
+                            V(sem2); // -------------------------------------------------------- signal sem2 SON2
+                            V(sem3); 
 							fclose(fp3);                                                // ** SON2 CS ends 
 						}
 					}  
