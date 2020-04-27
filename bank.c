@@ -9,6 +9,7 @@
 #include <sys/stat.h> 
 #include <sys/wait.h>
 
+
     // for functions semget() to get semaphore, and semctl() set initial value of semget() 
 #define KEY1 1100
 #define KEY2 1111
