@@ -9,7 +9,7 @@
 #include <sys/stat.h> 
 #include <sys/wait.h>
 
-//update 
+//working on semaphores 
     // for functions semget() to get semaphore, and semctl() set initial value of semget() 
 #define KEY1 1100
 #define KEY2 1111
@@ -87,7 +87,6 @@ int main()
 		N=5;  // originally 5
 		for(i=1;i<=N; i++)
 		{   
-           
            P(sem1);
 			printf("Dear old dad is trying to do update.\n");             
 			fp1 = fopen("balance", "r+");
@@ -108,8 +107,6 @@ int main()
 			fclose(fp1);
 			printf("Dear old dad is done doing update. \n");
 			sleep(rand()%5);	/* Go have coffee for 0-4 sec. */
-			
-	
 		}   
 	}                                                                               //********** end of DAD process P1
 	else
@@ -136,12 +133,10 @@ int main()
 				if(N_Att == 0)
 				{
 					fclose(fp3);
-					flag = TRUE;
-                     
+					flag = TRUE;   
 				}
 				else
 				{
-
 					printf("Poor SON_1 wants to withdraw money.\n");
                    
 					fp2 = fopen("balance", "r+");                               // **son1 reads the balance 
@@ -152,11 +147,9 @@ int main()
 					{
 						fclose(fp2);
 						fclose(fp3);
-                    
 					}
 					else
 					{   
-                        
 						sleep(rand()%5);
 						fseek(fp2,0L, 0);
 						bal2 -=20;
@@ -172,12 +165,9 @@ int main()
                         V(sem1);
                         V(sem2); // -------------------------------------------------------- signal sem2
 						fclose(fp3); 
-                       
 					}
 				}
-               
 			}
-
 		}
 		else
 		{
@@ -193,7 +183,6 @@ int main()
 				printf("Second Son's Pid: %d\n",getpid());                              
 				//Third child process. Second poor son tries to do updates.
                 //wait??
-                 
 				flag1 = FALSE;
 				while(flag1 == FALSE) 
 				{
@@ -206,12 +195,10 @@ int main()
 					if(N_Att == 0)
 					{
 						fclose(fp3);
-						flag1 = TRUE;
-                        
+						flag1 = TRUE; 
 					}
 					else
-					{
-                        
+					{ 
 						printf("Poor SON_2 wants to withdraw money.\n");
                         
 						fp2 = fopen("balance", "r+");                               // ** SON2 reads balance 
@@ -220,12 +207,10 @@ int main()
 						if (bal2 == 0)
 						{
 							fclose(fp2);
-							fclose(fp3);
-                           
+							fclose(fp3); 
 						}
 						else
-						{   
-                            
+						{    
 							sleep(rand()%5);
 							fseek(fp2,0L, 0);
 							bal2 -=20;
@@ -240,12 +225,9 @@ int main()
 							fprintf(fp3, "%d\n", N_Att);
                             V(sem1); // -------------------------------------------------------- signal sem2 
                             V(sem2); 
-							fclose(fp3);       
-                                                                   // ** SON2 CS ends 
+							fclose(fp3);                                                // ** SON2 CS ends 
 						}
 					}  
-				
-                    
 				}
 			}
 			else
@@ -261,8 +243,6 @@ int main()
 				printf("Process(pid = %d) exited with the status %d. \n", pid, status);
                 SEM_OFF(sem1); //-------------------------- turn off semaphores 
                 SEM_OFF(sem2); 
-
-                
 			}
 			exit(0);
 		}
