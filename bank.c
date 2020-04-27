@@ -95,12 +95,12 @@ int main()
 		N=5;  // originally 5
 		for(i=1;i<=N; i++)
 		{   
-           P(sem1);
+            //P(sem1);
 			printf("Dear old dad is trying to do update.\n");             
 			fp1 = fopen("balance", "r+");
             dad++; 
 			printf("DAD waited %d times\n",dad);
-            //P(sem1); //------------------------------------------------------------------wait sem2 semwait 
+            P(sem1); //------------------------------------------------------------------wait sem2 semwait 
 			fscanf(fp1, "%d", &bal2);
 			printf("Dear old dad reads balance = %d \n", bal2);
 			
@@ -111,7 +111,7 @@ int main()
 			printf("Dear old dad writes new balance = %d \n", bal2);        
 			fprintf(fp1, "%d \n", bal2);
             V(sem2); //-----------------------------------------------------------------> signal sem1   semsignal 
-            V(sem1);  //this works 
+            //V(sem3);  //this works 
 			fclose(fp1);
 			printf("Dear old dad is done doing update. \n");
 			sleep(rand()%5);	/* Go have coffee for 0-4 sec. */
@@ -170,8 +170,8 @@ int main()
 						fseek(fp3,0L, 0);
 						N_Att -=1;
 						fprintf(fp3, "%d\n", N_Att);
-                        V(sem1);
-                        V(sem2); // -------------------------------------------------------- signal sem2
+                    
+                        V(sem3); // -------------------------------------------------------- signal sem2
 						fclose(fp3); 
 					}
 				}
@@ -196,7 +196,7 @@ int main()
 				{
                     son2++; 
 					printf("SON2 waited %d times\n",son2);
-                    P(sem2);// wait--------------------------sem
+                    P(sem3);// wait--------------------------sem
 					fp3 = fopen("attempt" , "r+");                              // **  
                     
 					fscanf(fp3, "%d", &N_Att);
@@ -232,7 +232,7 @@ int main()
 							N_Att -=1;
 							fprintf(fp3, "%d\n", N_Att);
                             V(sem1); // -------------------------------------------------------- signal sem2 
-                            V(sem2); 
+                            //V(sem2); 
 							fclose(fp3);                                                // ** SON2 CS ends 
 						}
 					}  
