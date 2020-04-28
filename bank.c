@@ -13,8 +13,6 @@ Semaphores
 #include <sys/stat.h> 
 #include <sys/wait.h>
 
-
-    // for functions semget() to get semaphore, and semctl() set initial value of semget() 
 #define KEY1 1100
 #define KEY2 1111
 //**************************************
@@ -97,9 +95,9 @@ int main()
 			printf("Dear old dad is trying to do update.\n");  
 			printf("DAD waited %d times\n",dad);
 
+			dad++;
 			P(sem1);  //**************************************************** sem1 wait  
 			fp1 = fopen("balance", "r+");
-            dad++; // counter for number of waits 
 			
 			fscanf(fp1, "%d", &bal2);
 			printf("Dear old dad reads balance = %d \n", bal2);
@@ -134,7 +132,7 @@ int main()
 			flag = FALSE;
 			while(flag == FALSE) 
 			{
-                son1++; // times son waited
+                son1++; // ------------------------- times son1 waited
 				printf("SON1 waited %d times\n",son1);
 
 				P(sem2);  //**************************************************** sem2 wait
@@ -193,7 +191,7 @@ int main()
 				flag1 = FALSE;
 				while(flag1 == FALSE) 
 				{
-                    son2++; 
+                    son2++;  // -------------------------------- counter son2 times waited 
 					printf("SON2 waited %d times\n",son2);
 
 					P(sem2); //**************************************************** sem2 wait 
