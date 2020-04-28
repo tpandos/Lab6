@@ -13,14 +13,9 @@ Semaphores
 #include <sys/stat.h> 
 #include <sys/wait.h>
 
-<<<<<<< HEAD
 
     // for functions semget() to get semaphore, and semctl() set initial value of semget() 
 #define KEY1 1100
-=======
-//************************ semaphore keys 
-#define KEY1 1100    
->>>>>>> update
 #define KEY2 1111
 //**************************************
 
